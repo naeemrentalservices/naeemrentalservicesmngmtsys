@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Rental Management System</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-exclamation-circle text-danger"></i> {{ title }}
+                </div>
+            </div>
+            
+            <div class="login-body text-center">
+                <div style="font-size: 5rem; margin-bottom: 1.5rem;">
+                    {% if title == "Page Not Found" %}
+                        <i class="fas fa-map-signs text-warning"></i>
+                    {% elif title == "Internal Server Error" %}
+                        <i class="fas fa-bug text-danger"></i>
+                    {% elif title == "Access Denied" %}
+                        <i class="fas fa-lock text-danger"></i>
+                    {% else %}
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                    {% endif %}
+                </div>
+                
+                <h2 style="margin-bottom: 1rem;">{{ title }}</h2>
+                <p style="margin-bottom: 2rem;">{{ message }}</p>
+                
+                <a href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('login') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Go to {{ 'Dashboard' if current_user.is_authenticated else 'Login' }}
+                </a>
+            </div>
+            
+            <div class="login-footer">
+                &copy; 2024 Rental Management System
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Rental Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>My Profile</h1>
+</div>
+
+<div class="dashboard-grid">
+    <div class="col-span-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Profile Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="user-avatar" style="width: 4rem; height: 4rem; font-size: 1.5rem; margin-right: 1.5rem;">
+                        {{ current_user.name[0] }}
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 0.25rem;">{{ current_user.name }}</h3>
+                        <div class="text-secondary">{{ current_user.role }}</div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="col-span-6">
+                        <div class="customer-detail">
+                            <div class="detail-label">Username</div>
+                            <div class="detail-value">{{ current_user.username }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-span-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Change Password</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('change_password') }}" method="post">
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <div class="d-flex align-items-center">
+                            <input type="password" id="current_password" name="current_password" class="form-control" required>
+                            <button type="button" class="btn btn-outline btn-icon ml-2" onclick="togglePasswordVisibility('current_password', 'current-password-toggle')">
+                                <i id="current-password-toggle" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <div class="d-flex align-items-center">
+                            <input type="password" id="new_password" name="new_password" class="form-control" required>
+                            <button type="button" class="btn btn-outline btn-icon ml-2" onclick="togglePasswordVisibility('new_password', 'new-password-toggle')">
+                                <i id="new-password-toggle" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <div class="d-flex align-items-center">
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                            <button type="button" class="btn btn-outline btn-icon ml-2" onclick="togglePasswordVisibility('confirm_password', 'confirm-password-toggle')">
+                                <i id="confirm-password-toggle" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

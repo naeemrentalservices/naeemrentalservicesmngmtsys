@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Customers - Rental Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Customers</h1>
+    <a href="{{ url_for('add_customer') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Customer
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>CNIC</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Date Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if customers %}
+                        {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer[0] }}</td>
+                                <td>{{ customer[1] }}</td>
+                                <td>{{ customer[2] }}</td>
+                                <td>{{ customer[3] }}</td>
+                                <td>{{ customer[7] if customer|length > 7 else '' }}</td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a href="{{ url_for('view_customer', customer_id=loop.index0) }}" class="btn btn-sm btn-outline mr-2" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ url_for('edit_customer', customer_id=loop.index0) }}" class="btn btn-sm btn-outline mr-2" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% if current_user.role == 'Owner' %}
+                                            <form id="delete-customer-{{ loop.index0 }}" action="{{ url_for('delete_customer', customer_id=loop.index0) }}" method="post" class="d-inline">
+                                                <button type="button" class="btn btn-sm btn-danger" title="Delete" onclick="confirmDelete('Are you sure you want to delete this customer?', 'delete-customer-{{ loop.index0 }}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center p-4">
+                                <i class="fas fa-users" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                                <p>No customers found.</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

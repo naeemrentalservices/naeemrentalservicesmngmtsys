@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rental Management System{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        {% if current_user.is_authenticated %}
+        <header class="app-header glass-nav">
+            <a href="{{ url_for('dashboard') }}" class="logo">
+                <i class="fas fa-car-side mr-2"></i> Rental Management
+            </a>
+            
+            <div class="nav-container">
+                <nav class="main-nav">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('customers') }}" class="nav-link {% if request.endpoint in ['customers', 'add_customer', 'edit_customer', 'view_customer'] %}active{% endif %}">
+                        <i class="fas fa-users"></i> Customers
+                    </a>
+                    <a href="{{ url_for('products') }}" class="nav-link {% if request.endpoint in ['products', 'add_product', 'edit_product', 'view_product'] %}active{% endif %}">
+                        <i class="fas fa-motorcycle"></i> Products
+                    </a>
+                    <a href="{{ url_for('accounts') }}" class="nav-link {% if request.endpoint in ['accounts', 'add_transaction', 'edit_transaction'] %}active{% endif %}">
+                        <i class="fas fa-money-bill-wave"></i> Accounts
+                    </a>
+                    <a href="{{ url_for('agreement') }}" class="nav-link {% if request.endpoint in ['agreement', 'create_agreement'] %}active{% endif %}">
+                        <i class="fas fa-file-contract"></i> Agreement
+                    </a>
+                    <a href="{{ url_for('inquiries') }}" class="nav-link {% if request.endpoint == 'inquiries' %}active{% endif %}">
+                        <i class="fas fa-question-circle"></i> Inquiries
+                    </a>
+                    {% if current_user.role == 'Owner' %}
+                    <a href="{{ url_for('activity_logs') }}" class="nav-link {% if request.endpoint == 'activity_logs' %}active{% endif %}">
+                        <i class="fas fa-history"></i> Activity Log
+                    </a>
+                    <a href="{{ url_for('users') }}" class="nav-link {% if request.endpoint in ['users', 'add_user', 'edit_user'] %}active{% endif %}">
+                        <i class="fas fa-user-cog"></i> Users
+                    </a>
+                    {% endif %}
+                </nav>
+                
+                <div class="user-menu">
+                    <button class="user-menu-trigger">
+                        <div class="user-avatar">
+                            {{ current_user.name[0] }}
+                        </div>
+                    </button>
+                    
+                    <div class="user-menu-dropdown">
+                        <div class="p-3">
+                            <div class="fw-semibold">{{ current_user.name }}</div>
+                            <div class="fs-sm text-secondary">{{ current_user.role }}</div>
+                        </div>
+                        
+                        <div class="user-menu-divider"></div>
+                        
+                        <a href="{{ url_for('profile') }}" class="user-menu-item">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        
+                        <div class="user-menu-divider"></div>
+                        
+                        <a href="{{ url_for('logout') }}" class="user-menu-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        {% endif %}
+        
+        <main class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                            <button type="button" class="close">&times;</button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

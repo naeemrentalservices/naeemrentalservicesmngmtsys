@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}View Product - Rental Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Product Details</h1>
+    <a href="{{ url_for('products') }}" class="btn btn-outline">
+        <i class="fas fa-arrow-left"></i> Back to Products
+    </a>
+</div>
+
+<div class="dashboard-grid">
+    <div class="col-span-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">{{ product[0] }}</h2>
+                <div class="d-flex">
+                    <a href="{{ url_for('edit_product', product_id=product_id) }}" class="btn btn-outline">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="dashboard-grid">
+                    <div class="col-span-6">
+                        <div class="customer-detail">
+                            <div class="detail-label">Model</div>
+                            <div class="detail-value">{{ product[1] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="customer-detail">
+                            <div class="detail-label">Market Value</div>
+                            <div class="detail-value">PKR {{ product[4] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="customer-detail">
+                            <div class="detail-label">Engine Number</div>
+                            <div class="detail-value">{{ product[2] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="customer-detail">
+                            <div class="detail-label">Chassis Number</div>
+                            <div class="detail-value">{{ product[3] }}</div>
+                        </div>
+                    </div>
+                    <div class="col-span-12">
+                        <div class="customer-detail">
+                            <div class="detail-label">Description</div>
+                            <div class="detail-value">{{ product[5] or 'No description available.' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-span-6">
+                        <div class="customer-detail">
+                            <div class="detail-label">Date Added</div>
+                            <div class="detail-value">{{ product[7] if product|length > 7 else 'N/A' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-span-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Product Images</h2>
+            </div>
+            <div class="card-body">
+                {% if image_urls %}
+                    <div class="image-gallery">
+                        {% for url in image_urls %}
+                            <div class="gallery-item">
+                                <img src="{{ url }}" alt="Product Image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center p-4">
+                        <i class="fas fa-image" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                        <p>No images available for this product.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

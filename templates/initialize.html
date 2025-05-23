@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize System - Rental Management System</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-car-side"></i> Rental Management
+                </div>
+                <div class="login-subtitle">System Initialization</div>
+            </div>
+            
+            <div class="login-body">
+                {% if success %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> {{ message }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Spreadsheet ID</label>
+                        <div class="d-flex">
+                            <input type="text" class="form-control" value="{{ spreadsheet_id }}" readonly>
+                            <button type="button" class="btn btn-outline btn-icon ml-2" onclick="copyToClipboard('{{ spreadsheet_id }}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Folder ID</label>
+                        <div class="d-flex">
+                            <input type="text" class="form-control" value="{{ folder_id }}" readonly>
+                            <button type="button" class="btn btn-outline btn-icon ml-2" onclick="copyToClipboard('{{ folder_id }}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <p><strong>Default Admin Credentials:</strong></p>
+                        <p>Username: admin</p>
+                        <p>Password: admin123</p>
+                        <p class="mb-0"><strong>Please change the password after logging in!</strong></p>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> Initialization failed: {{ error }}
+                    </div>
+                {% endif %}
+                
+                <div class="d-flex justify-content-center mt-4">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Go to Login
+                    </a>
+                </div>
+            </div>
+            
+            <div class="login-footer">
+                &copy; 2024 Rental Management System
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

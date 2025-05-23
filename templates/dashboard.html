@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Rental Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Dashboard</h1>
+    <button id="refreshDashboard" class="btn btn-outline">
+        <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+</div>
+
+<div class="dashboard-grid mb-4">
+    <!-- Stats Cards -->
+    <div class="col-span-3">
+        <div class="card">
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <div class="stats-card-icon bg-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h3 class="stats-card-title">Total Customers</h3>
+                    </div>
+                </div>
+                <div class="stats-card-value" id="totalCustomers" data-value="{{ total_customers }}">{{ total_customers }}</div>
+                <div class="stats-card-footer">
+                    <a href="{{ url_for('customers') }}">View all customers <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-span-3">
+        <div class="card">
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <div class="stats-card-icon bg-info">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <div>
+                        <h3 class="stats-card-title">Total Products</h3>
+                    </div>
+                </div>
+                <div class="stats-card-value" id="totalProducts" data-value="{{ total_products }}">{{ total_products }}</div>
+                <div class="stats-card-footer">
+                    <a href="{{ url_for('products') }}">View all products <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-span-3">
+        <div class="card">
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <div class="stats-card-icon bg-success">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div>
+                        <h3 class="stats-card-title">Total Earnings</h3>
+                    </div>
+                </div>
+                <div class="stats-card-value" id="totalEarnings" data-value="{{ total_earnings }}" data-prefix="PKR ">PKR {{ total_earnings|int }}</div>
+                <div class="stats-card-footer">
+                    <a href="{{ url_for('accounts') }}">View all transactions <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-span-3">
+        <div class="card">
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <div class="stats-card-icon bg-danger">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 class="stats-card-title">Total Expenditures</h3>
+                    </div>
+                </div>
+                <div class="stats-card-value" id="totalExpenditures" data-value="{{ total_expenditures }}" data-prefix="PKR ">PKR {{ total_expenditures|int }}</div>
+                <div class="stats-card-footer">
+                    <span class="text-danger">
+                        <i class="fas fa-arrow-down"></i> Expenses
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid mb-4">
+    <!-- Net Balance Card -->
+    <div class="col-span-4">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Net Balance</h2>
+            </div>
+            <div class="card-body text-center">
+                <div style="font-size: 3rem; font-weight: 700; margin: 2rem 0;" id="netBalance" data-value="{{ net_balance }}" data-prefix="PKR ">
+                    PKR {{ net_balance|int }}
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="mr-2 p-3" style="border-right: 1px solid var(--border-color);">
+                        <div class="fs-sm text-secondary">Income</div>
+                        <div class="fw-bold text-success">PKR {{ total_earnings|int }}</div>
+                    </div>
+                    <div class="p-3">
+                        <div class="fs-sm text-secondary">Expenses</div>
+                        <div class="fw-bold text-danger">PKR {{ total_expenditures|int }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Financial Chart -->
+    <div class="col-span-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Financial Overview</h2>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="financialChart" 
+                            data-labels="{{ chart_labels|tojson }}" 
+                            data-income="{{ income_data|tojson }}" 
+                            data-expense="{{ expense_data|tojson }}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Recent Activities -->
+    <div class="col-span-12">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Recent Activities</h2>
+            </div>
+            <div class="card-body">
+                <div class="activity-feed">
+                    {% if recent_activities %}
+                        {% for activity in recent_activities %}
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    {% if activity[2] == 'Login' %}
+                                        <i class="fas fa-sign-in-alt"></i>
+                                    {% elif activity[2] == 'Logout' %}
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    {% elif activity[2] == 'Add Customer' %}
+                                        <i class="fas fa-user-plus"></i>
+                                    {% elif activity[2] == 'Edit Customer' %}
+                                        <i class="fas fa-user-edit"></i>
+                                    {% elif activity[2] == 'Delete Customer' %}
+                                        <i class="fas fa-user-minus"></i>
+                                    {% elif activity[2] == 'Add Product' %}
+                                        <i class="fas fa-plus-circle"></i>
+                                    {% elif activity[2] == 'Edit Product' %}
+                                        <i class="fas fa-edit"></i>
+                                    {% elif activity[2] == 'Delete Product' %}
+                                        <i class="fas fa-trash-alt"></i>
+                                    {% elif activity[2] == 'Add Transaction' %}
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    {% elif activity[2] == 'Edit Transaction' %}
+                                        <i class="fas fa-money-check-alt"></i>
+                                    {% elif activity[2] == 'Delete Transaction' %}
+                                        <i class="fas fa-money-bill-wave-alt"></i>
+                                    {% elif activity[2] == 'Create Agreement' %}
+                                        <i class="fas fa-file-contract"></i>
+                                    {% elif activity[2] == 'Add User' %}
+                                        <i class="fas fa-user-plus"></i>
+                                    {% elif activity[2] == 'Edit User' %}
+                                        <i class="fas fa-user-edit"></i>
+                                    {% elif activity[2] == 'Delete User' %}
+                                        <i class="fas fa-user-minus"></i>
+                                    {% elif activity[2] == 'Change Password' %}
+                                        <i class="fas fa-key"></i>
+                                    {% else %}
+                                        <i class="fas fa-history"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">{{ activity[3] }}</div>
+                                    <div class="activity-meta">
+                                        <span>{{ activity[1] }}</span> • <span>{{ activity[0] }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center p-4">
+                            <i class="fas fa-history" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                            <p>No recent activities found.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% if recent_activities %}
+                <div class="card-footer text-right">
+                    <a href="{{ url_for('activity_logs') }}" class="btn btn-outline">View All Activities</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+{% endblock %}
